@@ -68,6 +68,14 @@ curl -H "Authorization: token $token" --request PATCH --data "$(generate_post_da
 
 ```
 
+使用crontab 添加定时任务;
+```
+crontab -e
+crontab -l
+#Every hour send public ip to gist
+1 * * * * /usr/local/bin/sendpublicip.sh
+```
+
 # 动态从gist中获取ip 然后链接vpn
 
 请参考connect-myvpn.sh
