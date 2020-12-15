@@ -37,6 +37,12 @@ nobind
 persist-key
 persist-tun
 mute-replay-warnings
+up /etc/openvpn/scripts/update-systemd-resolved
+up-restart
+down /etc/openvpn/scripts/update-systemd-resolved
+down-pre
+dhcp-option DOMAIN-ROUTE .
+
 verb 3
 
 " >/tmp/homevpn.ovpn

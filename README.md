@@ -123,10 +123,53 @@ nobind
 persist-key
 persist-tun
 mute-replay-warnings
+
+#更新systemd-resolved
+# for old fedora using /etc/resolv.conf
+# up /etc/openvpn/update-resolv-conf
+# down /etc/openvpn/update-resolv-conf
+script-security 2
+setenv PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+up /etc/openvpn/scripts/update-systemd-resolved
+up-restart
+down /etc/openvpn/scripts/update-systemd-resolved
+down-pre
+#如果不配置这一行，dns解析可能会跳过tun0
+dhcp-option DOMAIN-ROUTE .
+#显示日志 verbose
 verb 3
 
 " >/tmp/homevpn.ovpn
 sudo openvpn --config /tmp/homevpn.ovpn
 
+```
+说明:
+
+连接vpn之后，我们们需要使用内部的DNS 服务器, 在fedora32之后 开始启用systemd-resolv.service
+
+需要配置openvpn 服务器 和客户端;
+* 服务器端配置
+```bash
+```
+* 客户端配置
+```
+script-security 2
+setenv PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+up /etc/openvpn/scripts/update-systemd-resolved
+up-restart
+down /etc/openvpn/scripts/update-systemd-resolved
+down-pre
+dhcp-option DOMAIN-ROUTE .
+```
+方案出自: https://github.com/jonathanio/update-systemd-resolved
+
+# 测试dns 解析没问题
+运行下面命令进行检测
+
+```
+resolvectl status
+resolvectl dns
+sudo tcpdump -n -i tun0 udp port 53
+ping registry.nuc1
 ```
 
