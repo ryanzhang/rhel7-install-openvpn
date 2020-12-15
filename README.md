@@ -1,5 +1,5 @@
 # VPN服务器搭建
-OpenVPN搭建 请follow 《OpenVPN 安装与配置》
+OpenVPN搭建 请follow [《OpenVPN 安装与配置》](https://www.jianshu.com/p/17a56994b74f)
 
 注意事项:
 
