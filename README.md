@@ -43,3 +43,82 @@ iptables-save > /etc/sysconfig/iptables
 
 在路由器上，打开端口转发，并且在客户端ryan.ovpn中 指定外部ip，就可以成功链接了；
 
+# 配置联通公网ip
+https://ryanzhang.github.io/work/2020/12/13/privatecloudinyourhome-vpn-network.html
+# 定期发送公网ip到gist
+文档请参考: https://developer.github.com/v3/gists/#edit-a-gist
+
+请参考 sendpublicip.sh
+```
+#!/bin/bash
+#Send your ip to gist
+#It will update an existing gist when you run this script
+#How to get your token
+#github->setting->developer setting->Personal access token
+token=your_token
+gistid=your_gist
+generate_post_data()
+{
+  cat <<EOF
+{"description": "Created via API", "public": "true", "files": {"$(hostname)": { "content":"$(curl ifconfig.co)"}}}
+EOF
+}
+generate_post_data
+curl -H "Authorization: token $token" --request PATCH --data "$(generate_post_data)" https://api.github.com/gists/$gistid
+
+```
+
+# 动态从gist中获取ip 然后链接vpn
+
+请参考connect-myvpn.sh
+
+您需要配置您自己的
+* gistid -该gist用来保存 联通的浮动公网ip
+* openvpn_client folder -目录里面是您自己的ca.crt以及client keypair
+```
+#!/bin/bash
+# you would need your ca certificate and client keypair to run this script
+# Check README.md for obtaining your own ca and client keypair
+# Please put your ca certification and kepair in your home folder
+#eg:
+#├── ca.crt
+#├── ryan.crt
+#├── ryan.key
+cd your_openvpn_client_homefolder
+
+# Replace with your gistid
+gistid=yourgistid
+ip=$(curl https://api.github.com/gists/$gistid |jq '.files.nuc1.content')
+echo "you public ip: $ip"
+echo "
+client
+dev tun
+proto udp
+#真实的ip地址自己填写
+remote $ip 1194
+
+#Replace with yourown ca filename
+ca ca.crt
+#Replace with your own client certificate and keys
+cert client.crt
+key client.key
+
+cipher AES-256-CBC
+auth SHA512
+auth-nocache
+tls-version-min 1.2
+tls-cipher TLS-DHE-RSA-WITH-AES-256-GCM-SHA384:TLS-DHE-RSA-WITH-AES-256-CBC-SHA256:TLS-DHE-RSA-WITH-AES-128-GCM-SHA256:TLS-DHE-RSA-WITH-AES-128-CBC-SHA256
+
+resolv-retry infinite
+compress lzo
+nobind
+persist-key
+persist-tun
+mute-replay-warnings
+verb 3
+
+" >/tmp/homevpn.ovpn
+sudo openvpn --config /tmp/homevpn.ovpn
+
+```
+
