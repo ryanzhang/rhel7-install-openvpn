@@ -1,0 +1,11 @@
+#!/bin/bash
+cd openvpnclient
+read -p "Input pin: " pin_code
+echo $pin_code
+echo "rzhang
+sn0wing$pin_code" >auth.txt
+#Not working
+#openvpn --setenv PATH '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' --script-security 2 --up /root/a.sh --down /etc/openvpn/update-resolv-conf.sh --down-pre --config pek2.ovpn  &
+#workaround
+openvpn --setenv PATH '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' --script-security 2 --up /root/update-resolv-conf.sh --down /root/update-resolv-conf.sh --down-pre --config pek2.ovpn & 
+cd -

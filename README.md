@@ -163,6 +163,16 @@ dhcp-option DOMAIN-ROUTE .
 ```
 方案出自: https://github.com/jonathanio/update-systemd-resolved
 
+针对rhel7 不使用systemd-resolved.service,还是要更新/etc/resolv.conf
+
+需要使用一个resolvconf的命令 请参考 https://github.com/alfredopalhares/openvpn-update-resolv-conf
+
+但是我在rhel7上面不成功；我使用了一个workaround的办法 即hardcode dns到/etc/resolv.conf中; 请参考:
+* connect-redhat
+* update-resolv-config.sh 
+
+粗暴,但是好用;
+
 # 测试dns 解析没问题
 运行下面命令进行检测
 
@@ -171,5 +181,6 @@ resolvectl status
 resolvectl dns
 sudo tcpdump -n -i tun0 udp port 53
 ping registry.nuc1
+curl -v www.google.com -x 192.168.2.xx:3128
 ```
 
