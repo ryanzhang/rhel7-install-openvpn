@@ -77,8 +77,11 @@ crontab -l
 ```
 
 # 动态从gist中获取ip 然后链接vpn
+(另一种方案是路由器上配置DDNS，服务商一般有花生壳；我后来用了TP-LINK的路由器；也带DDNS域名服务；也可以解决动态IP 绑定域名问题；下面方案是针对没有DDNS服务的情况)
 
 请参考connect-myvpn.sh
+
+
 
 您需要配置您自己的
 * gistid -该gist用来保存 联通的浮动公网ip
@@ -173,7 +176,7 @@ dhcp-option DOMAIN-ROUTE .
 
 粗暴,但是好用;
 
-# 测试dns 解析没问题
+# 测试dns 解析
 运行下面命令进行检测
 
 ```
