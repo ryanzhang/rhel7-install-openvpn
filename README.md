@@ -176,6 +176,16 @@ dhcp-option DOMAIN-ROUTE .
 
 粗暴,但是好用;
 
+/etc/resolv.conf dns配置 也支持
+```bash
+domain xxxx
+search xxxx
+nameserver dns1
+
+domain yyy
+search yyy
+nameserver dns2
+```
 # 测试dns 解析
 运行下面命令进行检测
 
